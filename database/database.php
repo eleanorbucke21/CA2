@@ -6,16 +6,16 @@ $password = "";
 $database = "ca2rental";
 
 // Create connection
-$conn = new mysqli($host, $username, $password, $database);
+$db = new mysqli($host, $username, $password, $database);
 
 // Check connection
-if ($conn->connect_error) {
+if ($db->connect_error) {
     // Log error (example method, implement logging as needed)
-    error_log("Connection failed: " . $conn->connect_error);
+    error_log("Connection failed: " . $db->connect_error);
     // Display a generic error message to the user
     die("Connection failed. Please try again later.");
+} else {
+    // For development purposes, to confirm successful connection
+    echo "Connected successfully";
 }
-
-// For development purposes, to confirm successful connection
-// echo "Connected successfully";
 ?>

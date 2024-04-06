@@ -34,7 +34,7 @@ if (isset($_SESSION['booking_message'])) {
         </div>
 
         <!-- CAPTCHA Section -->
-        <div class="mb-3">
+        <div class="mb-3 text-white">
           <label for="captcha" class="form-label text-white">Captcha</label>
           <p id="captcha" class="border p-2 rounded text-center">
             <?php echo $_SESSION['captcha']; ?>

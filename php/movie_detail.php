@@ -16,7 +16,7 @@ if (file_exists($jsonFilePath)) {
     $movies = json_decode($jsonData, true);
 
     // Get movie ID from URL query parameter
-    $movieId = $_GET['movie_id'] ?? null;
+    $movieId = (isset($_GET['movie_id']) ? $_GET['movie_id'] - 1 : null);
 
     // Check if movie ID is provided and exists in the JSON data
     if ($movieId !== null && isset($movies['movies'][$movieId])) {
@@ -54,7 +54,7 @@ if (file_exists($jsonFilePath)) {
                 </div>
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
                 <div class="text-center my-5 col-12">
-                    <a href="booking.php" class="btn btn-danger">Book Now</a> <!-- Ensure this link points to your booking form -->
+                    <a href="booking.php" class="btn btn-dark btn-outline-light">Book Now</a> <!-- Ensure this link points to your booking form -->
                 </div>
                 <?php endif; ?>
 

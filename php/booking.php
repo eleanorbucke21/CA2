@@ -1,20 +1,17 @@
 <?php
-// Include base file
+// Start session
+session_start();
+
+// Extend the base.php file
 include '../base.php';
 
 // Include database connection
 include '../database/database.php';
 
-// Start session
-session_start();
-
-// Check if movie_id is set in the URL and store it in a session variable
+// Check if movie_id is set in the URL and store it in a session
 if (isset($_GET['movie_id'])) {
     $_SESSION['movie_id'] = $_GET['movie_id'];
 }
-
-// Debugging: Check if movie_id is set in the session
-echo "Debug: Movie ID from session: " . $_SESSION['movie_id']; // Debugging line
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -53,22 +50,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+// Fetch movie details from the database including the poster URL
+if (isset($_SESSION['movie_id'])) {
+    $movie_id = $_SESSION['movie_id'];
+    $stmt = $db->prepare("SELECT * FROM movies WHERE movie_id = ?");
+    $stmt->bind_param("i", $movie_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $movie = $result->fetch_assoc();
+        $poster_url = isset($movie['posterUrl']) ? $movie['posterUrl'] : ''; // Check if posterUrl exists
+    } else {
+        // Movie not found
+        echo "Movie not found.";
+        exit();
+    }
+    $stmt->close();
+} else {
+    // Movie ID not provided
+    echo "Movie ID not provided.";
+    exit();
+}
 ?>
 
-<!-- booking.php -->
+<!-- booking form-->
 
 <div class="container mt-5">
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <div class="mb-3">
-            <label for="date" class="form-label text-white">Date:</label>
-            <input type="date" class="form-control" id="date" name="date">
-            <span class="error text-danger"><?php echo isset($dateErr) ? $dateErr : ''; ?></span>
+    <div class="row">
+        <!-- Column for the movie poster image -->
+        <div class="col-md-6">
+            <!-- Debugging: Display poster URL -->
+            <?php echo "Debug: Poster URL - " . htmlspecialchars($poster_url); ?>
+            
+            <!-- Display movie poster image -->
+            <img src="<?php echo htmlspecialchars($poster_url); ?>" alt="Movie Poster" class="img-fluid">
         </div>
-        <button type="submit" class="btn btn-dark btn-outline-light">Submit</button>
-    </form>
+        <!-- Column for the form -->
+        <div class="col-md-6">
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <div class="mb-3">
+                    <label for="date" class="form-label text-white">Date:</label>
+                    <input type="date" class="form-control" id="date" name="date">
+                    <span class="error text-danger"><?php echo isset($dateErr) ? $dateErr : ''; ?></span>
+                </div>
+                <button type="submit" class="btn btn-dark btn-outline-light">Submit</button>
+            </form>
+        </div>
+    </div>
 </div>
 
-<!-- JavaScript -->
+<!-- Custom JavaScript -->
 <script>
 // Function to set today's date
 function setTodayDate() {

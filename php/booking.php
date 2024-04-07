@@ -1,56 +1,66 @@
 <?php
-
-// Extend the base.php file
+// Include base file
 include '../base.php';
-session_start(); 
 
-// Generate a random captcha and store it in session
-$_SESSION['captcha'] = rand(1000, 9999);
+// Include database connection
+include '../database/database.php';
 
-// Booking Message
-$bookingMessage = '';
-if (isset($_SESSION['booking_message'])) {
-    $bookingMessage = $_SESSION['booking_message'];
-    // Optionally clear the message after displaying it to avoid repetition on page refresh
-    unset($_SESSION['booking_message']);
+// Start session
+session_start();
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate date
+    $dateErr = '';
+    $date = $_POST["date"];
+    if (empty($date)) {
+        $dateErr = "Date is required";
+    }
+
+    // If there are no errors, insert data into past_bookings table
+    if (empty($dateErr)) {
+        // Dummy user ID and movie ID for demonstration purposes
+        $user_id = 1;
+        $movie_id = 1;
+
+        // Prepare and execute SQL statement
+        $stmt = $db->prepare("INSERT INTO past_bookings (user_id, movie_id, view_date) VALUES (?, ?, ?)");
+        $stmt->bind_param("iis", $user_id, $movie_id, $date);
+        if ($stmt->execute()) {
+            // Redirect user to profile.php upon successful booking
+            header("Location: profile.php");
+            exit(); // Ensure no further code is executed after redirection
+        } else {
+            echo "Error adding booking: " . $stmt->error;
+        }
+        $stmt->close();
+    }
 }
 ?>
 
+<!-- booking.php -->
 
 <div class="container mt-5">
-    <h2 class=text-white>Movie Streaming Rental</h2>
-    <!-- Display booking message-->
-    <?php if (!empty($bookingMessage)): ?>
-        <div class="alert alert-info">
-            <?php echo $bookingMessage; ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- Booking Form -->
-    <form id="bookingForm" action="process_booking.php" method="POST">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <div class="mb-3">
-          <label for="date" class="form-label text-white">Date</label>
-          <input type="date" class="form-control" id="date" name="date" required>
+            <label for="date" class="form-label text-white">Date:</label>
+            <input type="date" class="form-control" id="date" name="date">
+            <span class="error text-danger"><?php echo isset($dateErr) ? $dateErr : ''; ?></span>
         </div>
-
-        <!-- CAPTCHA Section -->
-        <div class="mb-3 text-white">
-          <label for="captcha" class="form-label text-white">Captcha</label>
-          <p id="captcha" class="border p-2 rounded text-center">
-            <?php echo $_SESSION['captcha']; ?>
-          </p>
-          <input type="text" class="form-control" id="captchaInput" name="captchaInput" placeholder="Enter the captcha" required>
-        </div>
-
-        <button type="submit" class="btn btn-dark btn-outline-light">Submit Booking</button>
+        <button type="submit" class="btn btn-dark btn-outline-light">Submit</button>
     </form>
 </div>
 
+<!-- JavaScript -->
 <script>
-  // Script to set the booking date to today's date
-  document.addEventListener('DOMContentLoaded', function () {
+// Function to set today's date
+function setTodayDate() {
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('date').value = today;
-  });
-</script>
+}
 
+// Call the function to set today's date when the page loads
+document.addEventListener('DOMContentLoaded', function () {
+    setTodayDate();
+});
+</script>

@@ -46,7 +46,7 @@ try {
             password VARCHAR(255) NOT NULL,
             role ENUM(\'admin\', \'user\') NOT NULL
         )',
-        'CREATE TABLE IF NOT EXISTS user_movie_views (
+        'CREATE TABLE IF NOT EXISTS past_bookings (
             view_id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT,
             movie_id INT,

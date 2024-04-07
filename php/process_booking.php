@@ -1,50 +1,71 @@
 <?php
-// Start the session to use session variables for feedback
-session_start();
+// process_booking.php
 
 // Include database connection
-require_once '../database/database.php'; // Adjust the path as needed
+include '../database/database.php';
 
-// Check if the form submission is a POST request
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize and assign form data
-    $name = $conn->real_escape_string(trim($_POST['name']));
-    $email = $conn->real_escape_string(trim($_POST['email']));
-    $date = $conn->real_escape_string(trim($_POST['date']));
-    
-    // CAPTCHA Validation
-    if (isset($_POST['captchaInput']) && $_POST['captchaInput'] == $_SESSION['captcha']) {
-        // Prepare SQL statement to prevent SQL injection
-        $stmt = $conn->prepare("INSERT INTO bookings (name, email, date) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $email, $date);
-    
-        // Execute the statement and check if it's successful
-        if ($stmt->execute()) {
-            // Success: Set a session message and redirect to a success page
-            $_SESSION['message'] = "Booking successfully submitted!";
-            header("Location: booking_success.php"); // Adjust redirect location as needed
-            exit();
-        } else {
-            // Error during execution: Set an error message and redirect back to booking form
-            $_SESSION['error'] = "There was a problem with your booking. Please try again.";
-            header("Location: booking.php"); // Adjust redirect location as needed
-            exit();
-        }
-    
-        // Close statement
-        $stmt->close();
-    } else {
-        // CAPTCHA is wrong: Set an error message and redirect back to the booking form
-        $_SESSION['error'] = 'Incorrect CAPTCHA. Please try again.';
-        header('Location: booking.php');
-        exit();
+// Start session
+session_start();
+
+// Function to regenerate CAPTCHA
+function regenerateCaptcha() {
+    $_SESSION['captcha'] = rand(1000, 9999);
+    echo $_SESSION['captcha'];
+}
+
+// Check if action is specified
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+    switch ($action) {
+        case 'regenerate_captcha':
+            regenerateCaptcha();
+            break;
+        default:
+            // Handle other actions if needed
+            break;
     }
-
-    // Close the database connection
-    $conn->close();
 } else {
-    // If not a POST request, redirect to the booking form
-    header("Location: booking.php");
-    exit();
+    // Handle form submission
+    $date = $captcha = '';
+    $dateErr = $captchaErr = '';
+
+    // Validate date
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (empty($_POST["date"])) {
+            $dateErr = "Date is required";
+        } else {
+            $date = $_POST["date"];
+            // Additional validation for date can be added here if needed
+        }
+
+        // Validate CAPTCHA (dummy implementation, replace with your CAPTCHA validation)
+        if (empty($_POST["captcha"])) {
+            $captchaErr = "CAPTCHA is required";
+        } else {
+            $captcha = $_POST["captcha"];
+            // Dummy CAPTCHA validation (replace with your CAPTCHA validation logic)
+            if ($captcha !== $_SESSION['captcha']) {
+                $captchaErr = "Invalid CAPTCHA";
+            }
+        }
+
+        // If there are no errors, insert data into past_bookings table
+        if (empty($dateErr) && empty($captchaErr)) {
+            $user_id = 1; 
+            $movie_id = 1; 
+
+            // Prepare and execute SQL statement
+            $stmt = $db->prepare("INSERT INTO past_bookings (user_id, movie_id, view_date) VALUES (?, ?, ?)");
+            $stmt->bind_param("iis", $user_id, $movie_id, $date);
+            if ($stmt->execute()) {
+                // Redirect user to profile.php upon successful booking
+                header("Location: profile.php");
+                exit(); 
+            } else {
+                echo "Error adding booking: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+    }
 }
 ?>

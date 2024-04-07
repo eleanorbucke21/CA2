@@ -35,7 +35,7 @@ if (file_exists($jsonFilePath)) {
             <!-- Add additional CSS or JS links as needed -->
         </head>
         <body>
-
+        <!-- Movie Details -->
         <div class="container my-5">
             <div class="row">
                 <div class="col-md-6">
@@ -52,12 +52,15 @@ if (file_exists($jsonFilePath)) {
                 <div class="col-md-6">
                     <img id="movieImageSmall" src="<?php echo htmlspecialchars($movie['posterUrl']); ?>" alt="<?php echo htmlspecialchars($movie['title']); ?>" class="img-fluid rounded d-md-none">
                 </div>
+                <!-- Book Button only seen when logged in -->
+
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-                <div class="text-center my-5 col-12">
-                    <a href="booking.php" class="btn btn-dark btn-outline-light">Book Now</a> <!-- Ensure this link points to your booking form -->
-                </div>
+                    <div class="text-center my-5 col-12">
+                        <a href="booking.php?movie_id=<?php echo $movieId + 1; ?>" class="btn btn-dark btn-outline-light">Book Now</a>
+                    </div>
                 <?php endif; ?>
 
+                <!-- Movie Trailer -->
                 <div class="col-12">
                     <div class="text-center my-5">
                         <iframe id="movieVideo" width="100%" height="560" src="https://www.youtube.com/embed/<?php echo getYoutubeVideoId($movie['videoUrl']); ?>" frameborder="0" allowfullscreen></iframe>

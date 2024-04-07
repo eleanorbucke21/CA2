@@ -1,27 +1,30 @@
 <?php
 include '../base.php';
 
-$jsonFilePath = __DIR__ . '/../movies/film.json';
+// Assuming movies are stored in a JSON file for this example
+$moviesJson = file_get_contents('CA2/movies/film.json');
+$moviesArray = json_decode($moviesJson, true)['movies'];
 
-if (file_exists($jsonFilePath)) {
-    $jsonString = file_get_contents($jsonFilePath);
-    $jsonData = json_decode($jsonString, true);
+$filteredMovies = $moviesArray; // Default to all movies
 
-    echo "<div class='container mt-5'><div class='row'>";
-
-    foreach ($jsonData['movies'] as $movie) {
-        if (isset($movie['posterUrl'], $movie['id'])) { // Ensure the movie has an id and a posterUrl
-            // Wrap the image in an anchor tag, pointing to movie_detail.php with the movie's id as a query parameter
-            echo '<div class="col-sm-6 col-md-4 col-lg-3 mb-4 gallery-img">';
-            echo '<a href="movie_detail.php?movie_id=' . htmlspecialchars($movie['id']) . '">';
-            echo '<img src="' . htmlspecialchars($movie['posterUrl']) . '" alt="' . htmlspecialchars($movie['title']) . '" class="rounded shadow" style="width: 200px; height: 250px; object-fit: cover;">';
-            echo '</a>';
-            echo '</div>'; // Close the column div
-        }
-    }
-
-    echo "</div></div>";
-} else {
-    echo '<p>Failed to load movie data. JSON file not found.</p>';
+// Check if a genre has been selected
+if (isset($_GET['genre']) && $_GET['genre'] != '') {
+    $selectedGenre = $_GET['genre'];
+    // Filter movies by the selected genre
+    $filteredMovies = array_filter($moviesArray, function ($movie) use ($selectedGenre) {
+        return in_array($selectedGenre, $movie['genres']);
+    });
 }
 ?>
+
+<div id="gallery-container">
+    <?php foreach ($filteredMovies as $movie): ?>
+        <div class="movie">
+            <a href="movie_detail.php?id=<?= htmlspecialchars($movie['id']) ?>">
+                <img src="<?= htmlspecialchars($movie['posterUrl']) ?>" alt="<?= htmlspecialchars($movie['title']) ?>" width="100" height="150">
+            </a>
+            <h3><?= htmlspecialchars($movie['title']) ?></h3>
+            <!-- Add more movie details as needed -->
+        </div>
+    <?php endforeach; ?>
+</div>

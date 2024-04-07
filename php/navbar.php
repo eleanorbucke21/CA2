@@ -23,7 +23,7 @@
             <?php if ($_SESSION['role'] === 'admin'): ?>
     <!-- Admin button -->
     <li class="nav-item" id="adminButton">
-        <a class="btn btn-outline-light ms-2" href="admin.php" role="button">Admin</a>
+        <a class="btn btn-outline-light ms-2" href="../phpadmin/admin.php" role="button">Admin</a>
     </li>
 <?php endif; ?>
                 <?php endif; ?>

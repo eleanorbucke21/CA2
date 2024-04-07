@@ -20,7 +20,13 @@
             <li class="nav-item" id="logoutButton">
               <a class="btn btn-outline-light ms-2" href="logout.php" role="button">Logout</a>
             </li>
-            <?php endif; ?>
+            <?php if ($_SESSION['role'] === 'admin'): ?>
+    <!-- Admin button -->
+    <li class="nav-item" id="adminButton">
+        <a class="btn btn-outline-light ms-2" href="admin.php" role="button">Admin</a>
+    </li>
+<?php endif; ?>
+                <?php endif; ?>
             <!-- Genre DropDown List -->
             <li class="nav-item">
               <div class="btn-group-genre">

@@ -8,6 +8,14 @@ include '../database/database.php';
 // Start session
 session_start();
 
+// Check if movie_id is set in the URL and store it in a session variable
+if (isset($_GET['movie_id'])) {
+    $_SESSION['movie_id'] = $_GET['movie_id'];
+}
+
+// Debugging: Check if movie_id is set in the session
+echo "Debug: Movie ID from session: " . $_SESSION['movie_id']; // Debugging line
+
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate date
@@ -19,21 +27,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // If there are no errors, insert data into past_bookings table
     if (empty($dateErr)) {
-        // Dummy user ID and movie ID for demonstration purposes
-        $user_id = 1;
-        $movie_id = 1;
+        // Check if movie_id is set in the session
+        if (isset($_SESSION['movie_id'])) {
+            // Get the movie ID from the session
+            $movie_id = $_SESSION['movie_id'];
 
-        // Prepare and execute SQL statement
-        $stmt = $db->prepare("INSERT INTO past_bookings (user_id, movie_id, view_date) VALUES (?, ?, ?)");
-        $stmt->bind_param("iis", $user_id, $movie_id, $date);
-        if ($stmt->execute()) {
-            // Redirect user to profile.php upon successful booking
-            header("Location: profile.php");
-            exit(); // Ensure no further code is executed after redirection
+            // Dummy user ID for demonstration purposes
+            $user_id = 1;
+
+            // Prepare and execute SQL statement
+            $stmt = $db->prepare("INSERT INTO past_bookings (user_id, movie_id, view_date) VALUES (?, ?, ?)");
+            $stmt->bind_param("iis", $user_id, $movie_id, $date);
+            if ($stmt->execute()) {
+                // Redirect user to profile.php upon successful booking
+                header("Location: profile.php");
+                exit(); // Ensure no further code is executed after redirection
+            } else {
+                echo "Error adding booking: " . $stmt->error;
+            }
+            $stmt->close();
         } else {
-            echo "Error adding booking: " . $stmt->error;
+            // Redirect user to movie_detail.php if movie_id is not provided
+            header("Location: movie_detail.php");
+            exit();
         }
-        $stmt->close();
     }
 }
 ?>

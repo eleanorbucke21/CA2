@@ -56,7 +56,7 @@ if (file_exists($jsonFilePath)) {
 
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
                     <div class="text-center my-5 col-12">
-                        <a href="booking.php?movie_id=<?php echo $movieId + 1; ?>" class="btn btn-dark btn-outline-light">Book Now</a>
+                    <a href="booking.php?movie_id=<?php echo $movieId + 1; ?>" class="btn btn-dark btn-outline-light">Book Now</a>
                     </div>
                 <?php endif; ?>
 

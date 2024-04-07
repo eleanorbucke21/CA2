@@ -6,39 +6,29 @@ include '../base.php';
 // Include database connection
 include '../database/database.php';
 
+// Function to update the JSON file with the current movies from the database
+function updateJsonFile() {
+    global $db; // Make the database connection available inside the function
+    $jsonFilePath = __DIR__ . '/../movies/film.json'; // Path to the JSON file
+    
+    // Fetch all movies from the database
+    $movies = [];
+    $result = $db->query("SELECT * FROM movies");
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $movies[] = $row;
+        }
+        $result->free();
+    }
+    
+    // Encode the movies to JSON and write to the file
+    $jsonString = json_encode($movies);
+    file_put_contents($jsonFilePath, $jsonString);
+}
+
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Assign form data to variables
-    $title = $_POST['title'];
-    $year = $_POST['year'];
-    $runtime = $_POST['runtime'];
-    $director = $_POST['director'];
-    $actors = $_POST['actors'];
-    $plot = $_POST['plot'];
-    $videoUrl = $_POST['videoUrl'];
-
-    // Handle the file upload for 'poster'
-    if (isset($_FILES['poster']) && $_FILES['poster']['error'] == 0) {
-        // Define the path to the upload directory
-        $targetDirectory = "../uploads/posters/"; // Ensure this directory exists and is writable
-        $fileName = basename($_FILES['poster']['name']);
-        $targetFilePath = $targetDirectory . $fileName;
-        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-
-        // Specify allowed file formats
-        $allowTypes = array('jpg', 'png', 'jpeg', 'gif');
-        if (in_array($fileType, $allowTypes)) {
-            // Upload file to server
-            if (move_uploaded_file($_FILES['poster']['tmp_name'], $targetFilePath)) {
-                // File upload success, insert into database
-                $posterUrl = $targetFilePath;
-            } else {
-                $_SESSION['error'] = "Sorry, there was an error uploading your file.";
-            }
-        } else {
-            $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed to upload.";
-        }
-    }
+    // Your existing form handling code here...
 
     // Insert movie record into database
     if (!isset($_SESSION['error'])) {
@@ -47,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($stmt->execute()) {
             $_SESSION['message'] = "Movie added successfully!";
+            updateJsonFile(); // Call function to update JSON file
         } else {
             $_SESSION['error'] = "Error: " . $db->error;
         }

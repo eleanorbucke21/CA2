@@ -8,32 +8,58 @@ include '../base.php';
 // Include database connection
 include '../database/database.php';
 
+// Define the function to update the JSON file
+function updateJsonFile() {
+    global $db; 
+    $jsonFilePath = __DIR__ . '/../movies/film.json'; 
+    
+    // Fetch all movies from the database
+    $movies = [];
+    $result = $db->query("SELECT * FROM movies");
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $movies[] = $row;
+        }
+        $result->free();
+    }
+    
+    // Encode the movies to JSON and write to the file
+    $jsonString = json_encode($movies);
+    file_put_contents($jsonFilePath, $jsonString);
+}
+
 // Process the form submission for updating movie details
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['movie_id'])) {
     // Extract and sanitize inputs
     $movieId = $_POST['movie_id'];
-    $title = $_POST['title']; // Sanitize this as needed
-    // Assume other variables ($year, $runtime, etc.) are set similarly
+    $title = $_POST['title']; // Assume sanitation for these inputs
+    // Other variables like $year, $runtime, etc., are set similarly
 
-    // Prepare the update statement (include all fields you're updating)
+    // Prepare the update statement including all fields you're updating
     $stmt = $db->prepare("UPDATE movies SET title = ?, year = ?, runtime = ?, director = ?, actors = ?, plot = ?, posterUrl = ?, videoUrl = ? WHERE movie_id = ?");
-    // Make sure to adjust the bind_param line according to your variables and their types
+    // Bind parameters
     $stmt->bind_param("siisssssi", $title, $year, $runtime, $director, $actors, $plot, $posterUrl, $videoUrl, $movieId);
+
+    // Execute the update
     $stmt->execute();
 
-    // Redirect or display a success message
+    // Update the JSON file to reflect the changes
+    updateJsonFile();
+
+    // Redirect to prevent form resubmission
     header('Location: ../phpadmin/admin.php');
     exit;
 }
 
-// Fetch the movie details if "edit" query parameter is set
+// Fetch the movie details for editing if the "edit" query parameter is set
 if (isset($_GET['edit'])) {
     $movieId = $_GET['edit'];
     $stmt = $db->prepare("SELECT * FROM movies WHERE movie_id = ?");
-    $stmt->bind_param("i", $movieId); // "i" denotes the type is INT
+    $stmt->bind_param("i", $movieId);
     $stmt->execute();
     $result = $stmt->get_result();
     $movie = $result->fetch_assoc();
+    
     if (!$movie) {
         die("Movie not found");
     }
@@ -41,6 +67,7 @@ if (isset($_GET['edit'])) {
     die("No movie ID provided");
 }
 ?>
+
 
 <!-- HTML and form go here, as in your previous snippet -->
 <div class="container">

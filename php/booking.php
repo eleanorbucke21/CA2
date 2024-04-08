@@ -23,44 +23,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date = $_POST["date"];
     if (empty($date)) {
         $dateErr = "Date is required";
-    }
-
-    // Validate CAPTCHA
-    if (!isset($_POST["captcha_input"]) || empty($_POST["captcha_input"]) || strtolower($_POST["captcha_input"]) !== strtolower($_SESSION["captcha"])) {
-        $captchaErr = "CAPTCHA is incorrect";
     } else {
         // If there are no errors, insert data into past_bookings table
-        if (empty($dateErr)) {
-            // Check if movie_id is set in the session
-            if (isset($_SESSION['movie_id'])) {
-                // Get the movie ID from the session
-                $movie_id = $_SESSION['movie_id'];
+        // Check if movie_id and user_id are set in the session
+        if (isset($_SESSION['movie_id']) && isset($_SESSION['user_id'])) {
+            // Get the movie ID and user ID from the session
+            $movie_id = $_SESSION['movie_id'];
+            $user_id = $_SESSION['user_id'];
 
-                // Dummy user ID for demonstration purposes
-                $user_id = 1;
-
-                // Prepare and execute SQL statement
-                $stmt = $db->prepare("INSERT INTO past_bookings (user_id, movie_id, view_date) VALUES (?, ?, ?)");
-                $stmt->bind_param("iis", $user_id, $movie_id, $date);
-                if ($stmt->execute()) {
-                    // Redirect user to profile.php upon successful booking
-                    header("Location: profile.php");
-                    exit(); // Ensure no further code is executed after redirection
-                } else {
-                    if (!$suppressMessages) {
-                        echo "Error adding booking: " . $stmt->error;
-                    }
-                }
-                $stmt->close();
+            // Prepare and execute SQL statement
+            $stmt = $db->prepare("INSERT INTO past_bookings (user_id, movie_id, view_date) VALUES (?, ?, ?)");
+            $stmt->bind_param("iis", $user_id, $movie_id, $date);
+            if ($stmt->execute()) {
+                // Redirect user to profile.php upon successful booking
+                header("Location: profile.php");
+                exit(); // Ensure no further code is executed after redirection
             } else {
-                // Redirect user to movie_detail.php if movie_id is not provided
-                header("Location: movie_detail.php");
-                exit();
+                if (!$suppressMessages) {
+                    echo "Error adding booking: " . $stmt->error;
+                }
             }
+            $stmt->close();
+        } else {
+            // Redirect user to login.php if user_id is not provided
+            header("Location: login.php");
+            exit();
         }
     }
 }
-
 
 // Fetch movie details from the database including the poster URL
 if (isset($_SESSION['movie_id'])) {
@@ -105,18 +95,22 @@ if (isset($_SESSION['movie_id'])) {
                     <span class="error text-danger"><?php echo isset($dateErr) ? $dateErr : ''; ?></span>
                 </div>
                 <!-- CAPTCHA -->
-                <label for="captcha_input" class="form-label text-white">CAPTCHA:</label>
-                <div class="mb-3 border border-light bg-dark text-white p-2 rounded text-center">
-                    <?php include 'captcha.php'; ?>
-                </div>
-                <div class="mb-3">
-                    <label for="captcha_input" class="form-label text-white">Enter CAPTCHA:</label>
-                    <input type="text" class="form-control" id="captcha_input" name="captcha_input">
-                    <span class="error text-danger"><?php echo isset($captchaErr) ? $captchaErr : ''; ?></span>
-                </div>
-                <!-- Submit button -->
-                <div class="text-center">
-                    <button type="submit" class="btn btn-dark btn-outline-light">Submit</button>
+                <!-- CAPTCHA display -->
+                    <div id="captcha_display" class="mb-3 border border-light bg-dark text-white p-2 rounded text-center"></div>
+
+                    <!-- Hidden input to store actual CAPTCHA value -->
+                    <input type="hidden" id="captcha_value" name="captcha_value">
+
+                    <div class="mb-3">
+                        <label for="captcha_input" class="form-label text-white">Enter CAPTCHA:</label>
+                        <input type="text" class="form-control" id="captcha_input" name="captcha_input">
+                        <span class="error text-danger"><!-- Place for potential error message --></span>
+                    </div>
+
+                    <!-- Submit button with CAPTCHA validation -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-dark btn-outline-light" onclick="return validateCaptcha()">Submit</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -125,15 +119,49 @@ if (isset($_SESSION['movie_id'])) {
 
 
 <!-- Custom JavaScript -->
+
 <script>
-// Function to set today's date
+    // Function to set today's date on the date input field
 function setTodayDate() {
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('date').value = today;
 }
 
-// Call the function to set today's date when the page loads
+// Function to generate a CAPTCHA code and display it
+function generateCaptcha() {
+    const captchaDisplay = document.getElementById('captcha_display');
+    let captchaCode = Math.floor(1000 + Math.random() * 9000); // Generate a 4-digit code
+    captchaDisplay.innerText = captchaCode; // Display the CAPTCHA code
+    document.getElementById('captcha_value').value = captchaCode; // Store the CAPTCHA code in a hidden input for validation
+}
+
+// Function to validate the CAPTCHA entered by the user against the generated CAPTCHA
+function validateCaptcha() {
+    const enteredCaptcha = document.getElementById('captcha_input').value;
+    const actualCaptcha = document.getElementById('captcha_value').value;
+    if (enteredCaptcha !== actualCaptcha) {
+        alert('CAPTCHA is incorrect');
+        console.log('CAPTCHA failed'); // For debugging
+        return false; // Prevent form submission
+    }
+    console.log('CAPTCHA passed'); // For debugging
+    return true; // Allow form submission
+}
+
+// Add event listeners when the DOM content is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
-    setTodayDate();
+    setTodayDate(); // Set the current date in the date input field
+    generateCaptcha(); // Generate a new CAPTCHA code
 });
+
+// Attach the validateCaptcha function to the form's submit event
+document.getElementById('yourFormId').addEventListener('submit', function(event) {
+    if (!validateCaptcha()) {
+        event.preventDefault();
+    } else {
+        console.log('Form submitted'); 
+        
+    }
+});
+
 </script>

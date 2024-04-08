@@ -21,43 +21,41 @@
               <a class="btn btn-outline-light ms-2" href="logout.php" role="button">Logout</a>
             </li>
             <?php if ($_SESSION['role'] === 'admin'): ?>
-    <!-- Admin button -->
-    <li class="nav-item" id="adminButton">
-        <a class="btn btn-outline-light ms-2" href="../phpadmin/admin.php" role="button">Admin</a>
-    </li>
-<?php endif; ?>
-                <?php endif; ?>
-            <!-- Genre DropDown List -->
+              <!-- Admin button -->
+              <li class="nav-item" id="adminButton">
+                  <a class="btn btn-outline-light ms-2" href="../phpadmin/admin.php" role="button">Admin</a>
+              </li>
+              <?php endif; ?>
+              <?php endif; ?>
+              <!-- Genre DropDown List-->
             <li class="nav-item">
               <div class="btn-group-genre">
-                <button type="button" class="btn btn-dark btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn btn-dark btn-lg dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
                   Genre
                 </button>
                 <div class="dropdown-menu dropdown-menu-genre dropdown-menu-end" id="genreDropdown">
-                  <!-- Genre options -->
-                  <div class="dropdown-menu dropdown-menu-genre dropdown-menu-end" id="genreDropdown">
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Comedy')">Comedy</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Fantasy')">Fantasy</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Crime')">Crime</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Drama')">Drama</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Music')">Music</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Adventure')">Adventure</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('History')">History</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Thriller')">Thriller</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Animation')">Animation</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Family')">Family</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Mystery')">Mystery</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Biography')">Biography</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Action')">Action</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Film-Noir')">Film-Noir</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Romance')">Romance</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Sci-Fi')">Sci-Fi</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('War')">War</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Western')">Western</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Horror')">Horror</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Musical')">Musical</button>
-                    <button type="button" class="dropdown-item d-block" onclick="filterMovies('Sport')">Sport</button>
-                  </div>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Comedy'">Comedy</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Fantasy'">Fantasy</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Crime'">Crime</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Drama'">Drama</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Music'">Music</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Adventure'">Adventure</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=History'">History</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Thriller'">Thriller</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Animation'">Animation</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Family'">Family</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Mystery'">Mystery</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Biography'">Biography</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Action'">Action</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Film-Noir'">Film-Noir</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Romance'">Romance</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Sci-Fi'">Sci-Fi</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=War'">War</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Western'">Western</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Horror'">Horror</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Musical'">Musical</button>
+                  <button type="button" class="dropdown-item d-block" onclick="location.href='index.php?genre=Sport'">Sport</button>
                 </div>
               </div>
             </li>
@@ -66,3 +64,6 @@
       </div>
     </nav>
 </header>
+
+
+

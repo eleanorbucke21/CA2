@@ -1,7 +1,7 @@
 <?php
-include '../base.php';
+include 'base.php'; 
 
-$jsonFilePath = __DIR__ . '/../movies/film.json';
+$jsonFilePath = __DIR__ . '/movies/film.json'; // removed one level of ../
 $selectedGenre = isset($_GET['genre']) ? $_GET['genre'] : 'All';
 
 if (file_exists($jsonFilePath)) {
@@ -15,7 +15,7 @@ if (file_exists($jsonFilePath)) {
         if ($selectedGenre == 'All' || in_array($selectedGenre, $movie['genres'])) {
             if (isset($movie['posterUrl'], $movie['id'])) {
                 echo '<div class="col-sm-6 col-md-4 col-lg-3 mb-4 gallery-img">';
-                echo '<a href="movie_detail.php?movie_id=' . htmlspecialchars($movie['id']) . '">';
+                echo '<a href="php/movie_detail.php?movie_id=' . htmlspecialchars($movie['id']) . '">'; // adjusted href path
                 echo '<img src="' . htmlspecialchars($movie['posterUrl']) . '" alt="' . htmlspecialchars($movie['title']) . '" class="img-fluid rounded shadow" style="width: 100%; height: auto; object-fit: cover;">';
                 echo '</a>';
                 echo '</div>';

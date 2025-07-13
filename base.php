@@ -39,7 +39,7 @@ define('BASE_URL', ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HT
 
 <body class="bg-dark">
 <header>
-<?php include '../php/navbar.php'; ?>
+<?php include 'php/navbar.php'; ?>
 </header>
 
 <main class="container-fluid bg-dark">
@@ -58,7 +58,7 @@ define('BASE_URL', ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HT
 
 
 <footer>
-<?php include '../php/footer.php'; ?>
+<?php include 'php/footer.php'; ?>
 </footer>
 
     <!-- Custom JavaScript-->

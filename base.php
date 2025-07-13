@@ -28,7 +28,7 @@ define('BASE_URL', 'http://localhost/CA2');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="http://localhost/CA2/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <!-- FONT AWESOME-->
     <script src="https://kit.fontawesome.com/8084e45a7c.js" crossorigin="anonymous"></script>
@@ -38,7 +38,7 @@ define('BASE_URL', 'http://localhost/CA2');
 
 <body class="bg-dark">
 <header>
-<?php include 'php/navbar.php'; ?>
+<?php include '../php/navbar.php'; ?>
 </header>
 
 <main class="container-fluid bg-dark">
@@ -57,7 +57,7 @@ define('BASE_URL', 'http://localhost/CA2');
 
 
 <footer>
-<?php include 'php/footer.php'; ?>
+<?php include '../php/footer.php'; ?>
 </footer>
 
     <!-- Custom JavaScript-->

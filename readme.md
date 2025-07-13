@@ -1,7 +1,11 @@
+
+![Homepage](assets/images/amiresponsive.png)
+
 # CCT RENTAL #
 
 CCT Rental is a fictitous movie rental website. 
 
+:desktop_computer: [Live Website](https://cctrentalca2.onrender.com/)
 :open_file_folder: [Github Repository](https://github.com/eleanorbucke21/CA2)
 
 ---

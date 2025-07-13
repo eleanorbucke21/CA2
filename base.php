@@ -4,7 +4,7 @@ session_start();
 $pageTitle = "Home";
 
 // Define the BASE_URL constant
-define('BASE_URL', 'http://localhost/CA2');
+define('BASE_URL', ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . $_SERVER['HTTP_HOST']);
 
 ?>
 
@@ -28,7 +28,8 @@ define('BASE_URL', 'http://localhost/CA2');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
+    //? <link rel="stylesheet" href="../assets/css/style.css">
 
     <!-- FONT AWESOME-->
     <script src="https://kit.fontawesome.com/8084e45a7c.js" crossorigin="anonymous"></script>
